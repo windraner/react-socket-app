@@ -1,0 +1,1 @@
+export const setPlayerName = (data) => ({type: 'SET_PLAYER_NAME', payload: data });

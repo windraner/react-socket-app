@@ -1,21 +1,27 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import openSocket from 'socket.io-client';
+import { Provider } from 'react-redux';
+import configureStore from './store';
+import { setSocket, setGameList } from './action/socketAction';
+import MainContainer from './containers/MainContainer';
 
-class App extends Component {
+export const store = configureStore();
+export const socket = openSocket('http://localhost:5000');
+
+store.dispatch(setSocket(socket));
+
+socket.on('gameList', data => {
+    store.dispatch(setGameList(data));
+});
+
+socket.emit('getGameList'); //fetching game list for initital state
+
+export default class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code>
-        </p>
-      </div>
+      <Provider store={store}>
+        <MainContainer/>
+      </Provider>
     );
   }
 }
-
-export default App;

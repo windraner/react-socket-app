@@ -11,13 +11,15 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "cd client && npm install"
   },
-  "author": "Brad Traversy",
-  "license": "MIT",
+  "author": "Udjin",
+  "license": "sinedd",
   "devDependencies": {
     "nodemon": "^1.14.6"
   },
   "dependencies": {
+    "client": "0.0.1",
     "concurrently": "^3.5.1",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "socket.io": "^1.4.5"
   }
 }

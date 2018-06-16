@@ -1,17 +1,58 @@
 const express = require('express');
-
 const app = express();
+const port = 5000;
+const server = require('http').createServer(app).listen(process.env.PORT || port);
+const io = require('socket.io').listen(server);
 
-app.get('/api/customers', (req, res) => {
-  const customers = [
-    {id: 1, firstName: 'John', lastName: 'Doe'},
-    {id: 2, firstName: 'Brad', lastName: 'Traversy'},
-    {id: 3, firstName: 'Mary', lastName: 'Swanson'},
-  ];
+const Player = require('./server_components/Player');
+const Game = require('./server_components/Game');
 
-  res.json(customers);
+const {objectToArray} = require('./server_components/utility');
+
+const SOCKET_LIST = {}
+const playerList = {};
+const gameList = {};
+
+io.sockets.on('connection', (socket) => {
+	console.log('connected', socket.id);
+  SOCKET_LIST[socket.id] = socket;
+
+  createNewPlayer(socket);
+
+	socket.on('disconnect', function(){
+    delete playerList[socket.id];
+    delete SOCKET_LIST[socket.id];
+    console.log('disconected', socket.id);
+	});
 });
 
-const port = 5000;
+const createNewPlayer = (socket) => {
+  const player = new Player(socket.id);
+  playerList[socket.id] = player;
 
-app.listen(port, () => `Server running on port ${port}`);
+  socket.on('createNewGame', (data) => {
+    const game = new Game(socket.id);
+    gameList[socket.id] = game;
+    
+    if(data.name) {
+      gameList[socket.id].name = `${data.name} 's game`;
+    } else {
+      gameList[socket.id].name = `New game by NoName`;
+    }
+    
+    playerList[socket.id].name = data.name;
+
+    emitToAll('gameList', {gameList: objectToArray(gameList)});
+  });
+
+  socket.on('getGameList', () => {
+    socket.emit('gameList', {gameList: objectToArray(gameList)});
+  });
+}
+
+const emitToAll = (action, data) => {
+  for(let i in SOCKET_LIST){
+    let socket = SOCKET_LIST[i];
+    socket.emit(action, data);
+  }
+}
