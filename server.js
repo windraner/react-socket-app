@@ -1,8 +1,15 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const port = 5000;
 const server = require('http').createServer(app).listen(process.env.PORT || port);
 const io = require('socket.io').listen(server);
+
+app.use(express.static(path.join(__dirname, 'client/build')));
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
+//app.listen(9000);
 
 const Player = require('./server_components/Player');
 const Game = require('./server_components/Game');
