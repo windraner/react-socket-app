@@ -6,8 +6,8 @@ import { setSocket, setGameList } from './action/socketAction';
 import MainContainer from './containers/MainContainer';
 
 export const store = configureStore();
-export const socket = openSocket('http://localhost:5000');
-//export const socket = openSocket(''+window.location);
+//export const socket = openSocket('http://localhost:5000');
+export const socket = openSocket(''+window.location);
 
 store.dispatch(setSocket(socket));
 
