@@ -7,7 +7,7 @@ import MainContainer from './containers/MainContainer';
 
 export const store = configureStore();
 
-export const socket = openSocket('/');
+export const socket = openSocket('http://localhost:5000/');
 
 store.dispatch(setSocket(socket));
 

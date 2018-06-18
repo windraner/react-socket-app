@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const port = 6000;
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 // app.get('/', function (req, res) {
@@ -11,7 +10,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 // });
 //app.listen(5003);
 
-const server = require('http').createServer(app).listen(process.env.PORT || port);
+const server = require('http').createServer(app).listen(process.env.PORT || 5000);
 const io = require('socket.io').listen(server);
 
 const Player = require('./server_components/Player');
