@@ -7,7 +7,7 @@ import MainContainer from './containers/MainContainer';
 
 export const store = configureStore();
 
-export const socket = openSocket('http://localhost:5000/');
+export const socket = openSocket('https://azul-board-game.herokuapp.com/');
 
 store.dispatch(setSocket(socket));
 
