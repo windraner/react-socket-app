@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 // });
 //app.listen(5003);
 
-const server = require('http').createServer(app).listen(process.env.PORT || 5000);
+const server = require('http').createServer(app).listen(process.env.PORT || 8080);
 const io = require('socket.io').listen(server);
 
 const Player = require('./server_components/Player');
