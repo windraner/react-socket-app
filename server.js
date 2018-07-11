@@ -3,12 +3,11 @@ const path = require('path');
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'client/build')));
-// app.get('/', function (req, res) {
-//   res.setHeader('Content-Type', 'application/json');
-// 	res.setHeader("Access-Control-Allow-Origin",  null);
-//   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-// });
-//app.listen(5003);
+app.get('/', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+	res.setHeader("Access-Control-Allow-Origin",  null);
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 
 const server = require('http').createServer(app).listen(process.env.PORT || 8080);
 const io = require('socket.io').listen(server);
@@ -51,14 +50,36 @@ const createNewPlayer = (socket) => {
     
     playerList[socket.id].name = data.name;
 
+    socket.emit('enterInRoom', {joinedToGame: gameList[socket.id].gameOwner});
+
     emitToAll('gameList', {gameList: objectToArray(gameList)});
   });
 
   socket.on('getGameList', () => {
     socket.emit('gameList', {gameList: objectToArray(gameList)});
   });
+
+  socket.on('attemptEnterRoom', (data) => {
+    // check for game lobby
+    if(gameList[data.gameId]) {
+      const thisGame = gameList[data.gameId];
+      // check for this player in lobby
+      const isPlayerInRoom = thisGame.playersInRoom.find((item) => {
+        if(item === socket.id) return item;
+      });
+      // check for slots in lobby
+      if(!isPlayerInRoom && thisGame.playersInRoom.length < thisGame.playersPerRoom) {
+        thisGame.playersInRoom.push(socket.id);
+        playerList[socket.id].joinedToGame = thisGame;
+
+        socket.emit('enterInRoom', {joinedToGame: thisGame.gameOwner});
+        emitToAll('gameList', {gameList: objectToArray(gameList)});
+      }
+    }
+  }); 
 }
 
+// send data to all connections
 const emitToAll = (action, data) => {
   for(let i in SOCKET_LIST){
     let socket = SOCKET_LIST[i];

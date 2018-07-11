@@ -13,6 +13,7 @@ class StartGameContainer extends React.Component {
         return (
             <ContainerStyled>
                 <GameListList
+                    socket={this.props.socket}
                     gameList={this.props.gameList}
                 />
                 <CreateNewGameInput

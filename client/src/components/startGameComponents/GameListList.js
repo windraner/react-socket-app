@@ -2,10 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 
 class GameListList extends React.Component {
+    sendAttemptToEnter = (gameId) => {
+        const {socket} = this.props;
+        socket.emit('attemptEnterRoom', {gameId: gameId});
+        console.log('click', gameId);
+    }
+
     renderGameList = () => {
         const gameList = this.props.gameList.map((item, i) => {
+            console.log('item', item);
             return (
-                <ItemStyled key={item.gameOwner}>{item.name} ({item.playersInRoom.length}/{item.playersPerRoom})</ItemStyled>
+                <ItemStyled 
+                    key={item.gameOwner}
+                    onClick={() => this.sendAttemptToEnter(item.gameOwner)}
+                >
+                    {item.name} ({item.playersInRoom.length}/{item.playersPerRoom})
+                </ItemStyled>
             );
         });
 
