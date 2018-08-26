@@ -9,7 +9,7 @@ import MainContainer from './containers/MainContainer';
 
 export const store = configureStore();
 
-export const socket = io.connect('http://localhost:8080/');
+export const socket = io.connect('https://localhost:8080/');
 
 store.dispatch(setSocket(socket));
 
