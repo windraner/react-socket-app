@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-//import openSocket from 'socket.io-client';
 import { Provider } from 'react-redux';
 import configureStore from './store';
 import { setSocket, setGameList } from './action/socketAction';
@@ -9,9 +8,11 @@ import MainContainer from './containers/MainContainer';
 
 export const store = configureStore();
 
-// export const socket = io.connect('http://localhost:8080/');
-export const socket = io.connect();
+let url = '';
 
+if(process.env.NODE_ENV === 'development') url = 'http://localhost:8080/';
+
+export const socket = io.connect(url);
 
 store.dispatch(setSocket(socket));
 

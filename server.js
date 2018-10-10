@@ -1,68 +1,76 @@
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
+const routes = require('./server_components/routes');
+
 const app = express();
 
+// serves up static files from the public folder. Anything in public/ will just be served up as the file it is
 app.use(express.static(path.join(__dirname, 'client/build')));
-app.get('/', function (req, res) {
-  res.setHeader('Content-Type', 'application/json');
-	res.setHeader("Access-Control-Allow-Origin",  null);
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+
+// Takes the raw requests and turns them into usable properties on req.body
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/', routes);
+
+const server = app.listen(process.env.PORT || 8080, () => {
+  console.log(`Express running → PORT ${server.address().port}`);
 });
 
-const server = require('http').createServer(app).listen(process.env.PORT || 8080);
 const io = require('socket.io').listen(server);
 
 const Player = require('./server_components/Player');
 const Game = require('./server_components/Game');
 
-const {objectToArray} = require('./server_components/utility');
+const {ADD_SOCKET, DELETE_SOCKET} = require('./server_components/global/SocketList');
+const {ADD_PLAYER, SET_PLAYER_PROPERTY, DELETE_PLAYER} = require('./server_components/global/PlayerList');
+const {ADD_GAME, SET_GAME_PROPERTY, GET_GAME_LIST} = require('./server_components/global/GameList');
 
-const SOCKET_LIST = {}
-const playerList = {};
-const gameList = {};
+const {objectToArray, emitToAll} = require('./server_components/utility');
 
 io.sockets.on('connection', (socket) => {
 	console.log('connected', socket.id);
-  SOCKET_LIST[socket.id] = socket;
+  ADD_SOCKET(socket);
 
   createNewPlayer(socket);
 
 	socket.on('disconnect', function(){
-    delete playerList[socket.id];
-    delete SOCKET_LIST[socket.id];
+    DELETE_PLAYER(socket);
+    DELETE_SOCKET(socket);
     console.log('disconected', socket.id);
 	});
 });
 
 const createNewPlayer = (socket) => {
   const player = new Player(socket.id);
-  playerList[socket.id] = player;
+  ADD_PLAYER(socket.id, player);
 
   socket.on('createNewGame', (data) => {
     const game = new Game(socket.id);
-    gameList[socket.id] = game;
+    ADD_GAME(socket.id, game);
     
     if(data.name) {
-      gameList[socket.id].name = `${data.name} 's game`;
+      SET_GAME_PROPERTY({id: socket.id, property: 'name', value: `${data.name} 's game`});
     } else {
-      gameList[socket.id].name = `New game by NoName`;
+      SET_GAME_PROPERTY({id: socket.id, property: 'name', value: `New game by NoName`});
     }
     
-    playerList[socket.id].name = data.name;
+    SET_PLAYER_PROPERTY({id: socket.id, property: 'name', value: data.name});
+    
+    socket.emit('enterInRoom', {joinedToGame: GET_GAME_LIST()[socket.id].gameOwner});
 
-    socket.emit('enterInRoom', {joinedToGame: gameList[socket.id].gameOwner});
-
-    emitToAll('gameList', {gameList: objectToArray(gameList)});
+    emitToAll('gameList', {gameList: objectToArray(GET_GAME_LIST())});
   });
 
   socket.on('getGameList', () => {
-    socket.emit('gameList', {gameList: objectToArray(gameList)});
+    socket.emit('gameList', {gameList: objectToArray(GET_GAME_LIST())});
   });
 
   socket.on('attemptEnterRoom', (data) => {
     // check for game lobby
-    if(gameList[data.gameId]) {
-      const thisGame = gameList[data.gameId];
+    if(GET_GAME_LIST()[data.gameId]) {
+      const thisGame = GET_GAME_LIST()[data.gameId];
       // check for this player in lobby
       const isPlayerInRoom = thisGame.playersInRoom.find((item) => {
         if(item === socket.id) return item;
@@ -70,19 +78,11 @@ const createNewPlayer = (socket) => {
       // check for slots in lobby
       if(!isPlayerInRoom && thisGame.playersInRoom.length < thisGame.playersPerRoom) {
         thisGame.playersInRoom.push(socket.id);
-        playerList[socket.id].joinedToGame = thisGame;
+        SET_PLAYER_PROPERTY({id: socket.id, property: 'joinedToGame', value: thisGame});
 
         socket.emit('enterInRoom', {joinedToGame: thisGame.gameOwner});
-        emitToAll('gameList', {gameList: objectToArray(gameList)});
+        emitToAll('gameList', {gameList: objectToArray(GET_GAME_LIST())});
       }
     }
   }); 
-}
-
-// send data to all connections
-const emitToAll = (action, data) => {
-  for(let i in SOCKET_LIST){
-    let socket = SOCKET_LIST[i];
-    socket.emit(action, data);
-  }
 }
