@@ -26,9 +26,6 @@ const InputStyled = styled.input`
     box-sizing: border-box;
     outline: none;
     border: none;
-    box-shadow: 0 -5px #6A6DCB inset;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
     color: #fff;
     font-size: 22px;
     font-weight: 700;

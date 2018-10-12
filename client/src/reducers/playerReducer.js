@@ -1,6 +1,7 @@
 const initialState = {
     'name': '',
     'joinedRoom': false,
+    'position': 'lobby',
 };
 
 export default function playerReducer(state = initialState, action) {
@@ -15,6 +16,12 @@ export default function playerReducer(state = initialState, action) {
             return {
                 ...state,
                 joinedRoom: action.payload.joinedToGame,
+            }
+        
+        case 'SET_PLAYER_POSITION':
+            return {
+                ...state,
+                position: action.payload.position,
             }
             
 

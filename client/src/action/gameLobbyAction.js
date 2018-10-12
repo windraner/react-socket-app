@@ -1,0 +1,1 @@
+export const setGameLobbyData = (data) => ({type: 'SET_GAME_LOBBY_DATA', payload: data });

@@ -2,7 +2,7 @@ const Game = function(id) {
     let self = {
       'name': '',
       'gameOwner': id,
-      'playersInRoom': [id],
+      'playersInRoom': [],
       'playersPerRoom': 4,
     };
 
