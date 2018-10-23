@@ -1,4 +1,4 @@
-const {GET_GAME_LIST} = require('../global/GameList');
+const {GET_GAME_LIST, CHECK_START_GAME} = require('../global/GameList');
 const {SET_PLAYER_PROPERTY} = require('../global/PlayerList');
 const {objectToArray, emitToAll, emitToLobby, addPlayerToGameLobby} = require('../utility');
 
@@ -17,6 +17,8 @@ module.exports = (socket) => {
             SET_PLAYER_PROPERTY({id: socket.id, property: 'joinedToGame', value: GET_GAME_LIST()[data.gameId].gameOwner});
             SET_PLAYER_PROPERTY({id: socket.id, property: 'position', value: 'gameLobby'});
     
+            CHECK_START_GAME(data.gameId);
+
             socket.emit('enterInRoom', {joinedToGame: GET_GAME_LIST()[data.gameId].gameOwner});
             socket.emit('changePosition', {position: 'gameLobby'});
             emitToLobby({action: 'gameLobbyData', data: {gameLobbyData: GET_GAME_LIST()[data.gameId]}, gameId: data.gameId});

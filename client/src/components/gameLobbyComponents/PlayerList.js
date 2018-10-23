@@ -7,7 +7,7 @@ import EmptyCard from './EmptyCard';
 class PlayerList extends Component {
     
     renderPlayers = () => {
-        const { gameLobbyData } = this.props;
+        const { gameLobbyData, currentPlayerId } = this.props;
 
         if(!gameLobbyData.playersInRoom) return null;
 
@@ -16,11 +16,13 @@ class PlayerList extends Component {
 
         const result = gameLobbyData.playersInRoom.map(item => {
             if(!item) return <EmptyCard key={Math.random()} />;
+            const isActive = item.id === currentPlayerId
 
             return (
                 <PlayerCard
                     key={item.id}
                     item={item}
+                    isActive={isActive}
                 />
             );
         });
@@ -33,7 +35,6 @@ class PlayerList extends Component {
         return (
             <ContainerStyled>
                 {this.renderPlayers()}
-
             </ContainerStyled>
         );
     }
@@ -43,7 +44,7 @@ const ContainerStyled = styled.div`
     padding: 5px 15px;
     width: 100%;
     min-height: 250px;
-    border: solid 1px #000;
+    border: solid 2px #8287FF;
     border-radius: 5px;
     box-sizing: border-box;
 `;

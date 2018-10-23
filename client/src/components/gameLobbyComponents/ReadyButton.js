@@ -1,19 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import styled from 'styled-components';
 
-class BackButton extends Component {
-    returnToGameList = () => {
-        const {socket} = this.props;
-        socket.emit('leaveRoom');
-    }
+class ReadyButton extends Component {
 
-    render() {
-        return (
-            <ButtonStyled onClick={this.returnToGameList}>
-                Back
-            </ButtonStyled>
-        );
-    }
+	changeStatus = () => {
+		const {socket} = this.props;
+        socket.emit('readyForPlay');
+	}
+
+	render() {
+		return (
+			<ButtonStyled onClick={this.changeStatus}>
+				Ready
+			</ButtonStyled>
+		)
+	}
 }
 
 const ButtonStyled = styled.div`
@@ -40,4 +41,4 @@ const ButtonStyled = styled.div`
     cursor: pointer;
 `;
 
-export default BackButton;
+export default ReadyButton;

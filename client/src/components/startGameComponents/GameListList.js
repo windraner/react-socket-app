@@ -35,7 +35,7 @@ const ContainerStyled = styled.div`
     padding: 5px 15px;
     width: 100%;
     min-height: 200px;
-    border: solid 1px #000;
+    border: solid 2px #8287FF;
     border-radius: 5px;
     box-sizing: border-box;
 `;

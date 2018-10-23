@@ -2,6 +2,7 @@ const Game = function(id) {
     let self = {
       'name': '',
       'gameOwner': id,
+      'canStart': false,
       'playersInRoom': [],
       'playersPerRoom': 4,
     };

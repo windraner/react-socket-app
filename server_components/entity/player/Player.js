@@ -4,6 +4,7 @@ const Player = function(socket) {
       'id': socket.id,
       'name': '',
       'joinedToGame': false,
+      'ready': false,
       'position': 'lobby',
     };
   

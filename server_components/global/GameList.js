@@ -29,6 +29,20 @@ exports.REMOVE_EMPTY_GAME = (leavingGameId, id) => {
     }
 }
 
+exports.CHECK_START_GAME = (gameId) => {
+    if(!gameId || !GAME_LIST[gameId]) return;
+
+    if(GAME_LIST[gameId].playersInRoom.length < 2) return GAME_LIST[gameId].canStart = false;
+
+    const findNotReadyPlayer = GAME_LIST[gameId].playersInRoom.find((item) => {
+        if(!item.ready) return item;
+    });
+
+    if(!findNotReadyPlayer) return GAME_LIST[gameId].canStart = true;
+
+    return GAME_LIST[gameId].canStart = false;
+}
+
 exports.GET_GAME_LIST = () => {
     return GAME_LIST;
 };
