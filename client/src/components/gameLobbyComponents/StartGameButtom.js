@@ -6,7 +6,7 @@ class StartGameButtom extends Component {
     startGame = () => {
         const {socket, isGameCanStart} = this.props;
         
-        if(!isGameCanStart) return;
+        // if(!isGameCanStart) return;
 
         socket.emit('startNewGame');
 	}

@@ -4,9 +4,15 @@ const {emitToLobby} = require('../utility');
 
 module.exports = (socket) => {
     socket.on('startNewGame', () => {
-        // const gameId = GET_PLAYER_LIST()[socket.id].joinedToGame;
-        // SET_PLAYER_PROPERTY({id: socket.id, property: 'ready', value: !GET_PLAYER_LIST()[socket.id].ready});
+        if(!GET_GAME_LIST()[socket.id]) return;
 
-        // emitToLobby({action: 'gameLobbyData', data: {gameLobbyData: GET_GAME_LIST()[gameId]}, gameId: gameId});
+        // if(!GET_GAME_LIST()[socket.id].canStart) return;
+
+        GET_GAME_LIST()[socket.id].playersInRoom.map(item => {
+            SET_PLAYER_PROPERTY({id: item.id, property: 'position', value: 'inGame'});
+            GET_PLAYER_LIST()[item.id].getSocket().emit('changePosition', {position: 'inGame'});
+        });
+
+        emitToLobby({action: 'gameLobbyData', data: {gameLobbyData: GET_GAME_LIST()[socket.id]}, gameId: socket.id})
     });
 }

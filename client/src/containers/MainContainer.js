@@ -19,6 +19,10 @@ class MainContainer extends React.Component {
                 containerTorender = <LobbyContainer />;
                 break;
 
+            case 'inGame':
+                containerTorender = <div>GAME!!!!!!!!!!!!!</div>;
+                break;
+
             default:
                 containerTorender = <StartGameContainer />;
                 break;
