@@ -8,6 +8,7 @@ const eventDisconnect = require('../../socketEvents/disconnect');
 const eventLeaveRoom = require('../../socketEvents/leaveRoom');
 const eventReadyForPlay = require('../../socketEvents/readyForPlay');
 const eventStartNewGame = require('../../socketEvents/startNewGame');
+const eventSendMessage = require('../../socketEvents/sendMessage');
 
 module.exports = (socket) => {
     const player = new Player(socket);
@@ -24,6 +25,8 @@ module.exports = (socket) => {
     eventReadyForPlay(socket);
 
     eventStartNewGame(socket);
+
+    eventSendMessage(socket);
 
     eventDisconnect(socket);
 }

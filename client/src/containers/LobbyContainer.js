@@ -7,35 +7,47 @@ import BackButton from '../components/gameLobbyComponents/BackButton';
 import ReadyButon from '../components/gameLobbyComponents/ReadyButton';
 import StartGameButtom from '../components/gameLobbyComponents/StartGameButtom';
 
+import ChatContainer from './ChatContainer';
+
 class LobbyContainer extends Component {
     render() {
-        const { gameLobbyData, socket } = this.props;
+        const { gameLobbyData, socket, messages } = this.props;
         
         const isOwner = gameLobbyData.gameOwner === socket.id;
         const isGameCanStart = gameLobbyData.canStart;
 
         return (
             <ContainerStyled>
-                <PlayerList
-                    gameLobbyData={gameLobbyData}
-                    currentPlayerId={socket.id}
-                />
-                <ButtonWrapperStyled>
-                    <BackButton socket={socket} />
-                    
-                    <ReadyButon socket={socket} />
+                <ListWrapperStyled>
+                    <PlayerList
+                        gameLobbyData={gameLobbyData}
+                        currentPlayerId={socket.id}
+                    />
+                    <ButtonWrapperStyled>
+                        <BackButton socket={socket} />
+                        
+                        <ReadyButon socket={socket} />
 
-                    { isOwner ? <StartGameButtom socket={socket} isGameCanStart={isGameCanStart} /> : null}
-                </ButtonWrapperStyled>
+                        { isOwner ? <StartGameButtom socket={socket} isGameCanStart={isGameCanStart} /> : null}
+                    </ButtonWrapperStyled>
+                </ListWrapperStyled>
+
+                <ChatContainer />
             </ContainerStyled>
         );
     }
 }
 
 const ContainerStyled = styled.div`
+    display: flex;
+    justify-content: space-between;
     margin: 0 auto;
+    width: 600px;
+    min-height: 250px;
+`;
+
+const ListWrapperStyled = styled.div`
     width: 380px;
-    height: 250px;
 `;
 
 const ButtonWrapperStyled = styled.div`
@@ -45,7 +57,7 @@ const ButtonWrapperStyled = styled.div`
 `;
 
 const mapStateToProps = state => {
-    const { gameLobbyData } = state.gameLobbyReducer
+    const { gameLobbyData } = state.gameLobbyReducer;
     const { socket } = state.socketReducer;
 
     return (
