@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import PlayerList from '../components/gameLobbyComponents/PlayerList';
-import BackButton from '../components/gameLobbyComponents/BackButton';
-import ReadyButon from '../components/gameLobbyComponents/ReadyButton';
-import StartGameButtom from '../components/gameLobbyComponents/StartGameButtom';
+import PlayerList from './PlayerList';
+import BackButton from './BackButton';
+import StartGameButtom from './StartGameButtom';
+import ReadyButon from './ReadyButton';
 
-import ChatContainer from './ChatContainer';
+import ChatContainer from '../chatComponents/ChatContainer';
 
 class LobbyContainer extends Component {
     render() {
-        const { gameLobbyData, socket, messages } = this.props;
+        const { gameLobbyData, socket } = this.props;
         
         const isOwner = gameLobbyData.gameOwner === socket.id;
         const isGameCanStart = gameLobbyData.canStart;

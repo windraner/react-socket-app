@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import ChatInput from '../components/chatComponents/ChatInput';
-import ChatMessages from '../components/chatComponents/ChatMessages';
+import ChatInput from './ChatInput';
+import ChatMessages from './ChatMessages';
 
-import { removeMessages } from '../action/chatAction';
+import { removeMessages } from '../../action/chatAction';
 
 class ChatContainer extends Component {
 

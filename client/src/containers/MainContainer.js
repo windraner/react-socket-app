@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import StartGameContainer from './StartGameContainer';
-import LobbyContainer from './LobbyContainer';
+import StartGameContainer from '../components/startGameComponents/StartGameContainer';
+import LobbyContainer from '../components/gameLobbyComponents/LobbyContainer';
 
 class MainContainer extends React.Component {
     render() {
